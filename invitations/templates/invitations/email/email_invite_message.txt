@@ -1,0 +1,9 @@
+{% autoescape off %}
+
+Hello,
+
+You ({{ email }}) have been invited to join imageX.
+
+If you'd like to join, please go to {{ invite_url }}
+
+{% endautoescape %}

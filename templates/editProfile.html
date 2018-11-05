@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %} 
+<title>Edit Profile</title> 
+{% endblock %}
+
+{% block style %}
+<style>
+label{
+	display: inline-block;
+	width: 120px;
+}
+
+form ul{
+	display:none;
+}
+
+p{
+	margin: 20px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:800px;margin:80px">
+	<div class="input-group">
+
+		<form method='POST' action='' enctype='multipart/form-data'> {% csrf_token %}
+			<p>
+				{{ form.as_p }}
+			</p>
+			<button class="btn btn-default" type="submit">Update</button>
+		</form>
+	</div>
+
+	{% if form.non_field_errors %}
+		{% for error in form.non_field_errors %}
+			<div class="errorlist alert alert-warning" style='margin: 20px;' >
+				{{ error }}
+			</div>
+		{% endfor %}
+	{% endif %}
+
+	{% if form.avatarImage.errors %}
+		{% for error in form.avatarImage.errors %}
+			<div class="errorlist alert alert-danger" style='margin: 20px;' > 
+				{{ error }}
+			</div>
+		{% endfor %}
+	{% endif %}
+
+	<!-- {% if messages %}
+	{% for message in messages %}
+	  {% if message.tags %}
+	  <div class="alert alert-success" style='margin: 20px;'>{{ message }}</div>
+	  {% endif %}
+	{% endfor %}
+	{% endif %} -->
+</div>
+
+{% endblock %}
+

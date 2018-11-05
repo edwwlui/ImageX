@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% }
+
+{% block style %}
+<style>
+body{
+	padding: 80px;
+}
+label{
+	margin-bottom: 2px;
+}
+</style>
+{% endblock %}
+
+{% block script %}
+<script>
+	$(document).ready(function(){
+		$("input[type=text]").addClass("form-control");
+		$("input[type=password]").addClass("form-control");
+		//$(".input-group").css({'margin-left':'5px'});
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+
+<form method="post" action="{% url 'login' %}" style="margin-top: 10px;">
+	{% csrf_token %}
+	<div class="form-group">
+		<label>{{ form.username.label_tag }}</label>
+		<input type="text" name="username" id="id_username" class="form-control" placeholder='Username'>
+	</div> <!-- username form group -->
+	<div class="form-group">
+		<label>{{ form.password.label_tag }}</label>
+		<input type="password" name="password" id="id_email" class="form-control" placeholder='Password'>
+	</div><!-- password input group -->
+	<input type="submit" class="btn btn-outline-secondary float-right" value="Login" />
+	<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+	{# Assumes you setup the password_reset view in your URLconf #}
+	<a href="{% url 'password_reset' %}">Forgotten Password?</a>
+
+	{% if form.errors %}
+	<div class='alert alert-danger' style="margin-top: 20px;">Your username and password didn't match. Please try again.</div>
+	{% endif %}
+
+	{% if next %}
+	{% if user.is_authenticated %}
+	<!--<div class="row">-->
+		<div class='alert alert-warning' style="margin-top: 20px;">
+		<p>Your account doesn't have access to this page. To proceed,
+		please login with an account that has access.</p>
+		</div>
+	<!--</div>-->
+	{% else %}
+	<!--<div class="row">-->
+		<div class='alert alert-warning' style="margin-top: 20px;">Please login to see this page.</div>
+	<!--</div>-->
+	{% endif %}
+	{% endif %}
+
+{% endblock %}

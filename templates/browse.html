@@ -1,0 +1,216 @@
+{% extends "layout.html" %}
+
+{% block title %} 
+<title>Search Image</title> 
+{% endblock %}
+
+{% block style %}
+<style>
+#grids{
+	background-color:#f2f2f2;
+}
+
+.grid{
+	padding: 5px;
+}
+
+.imageinfo{
+	height:0px;
+	font-size: 18px;
+	position:relative;
+	top:-30px;
+	background: #f2f2f2;
+	-webkit-transition:.5s ease;
+	-moz-transition:.5s ease;
+	-o-transition:.5s ease;
+	-ms-transition:.5s ease;
+	transition:.5s ease;
+}
+
+.likes{
+	position: absolute;
+	left:5px;
+}
+
+.downloads{
+	position: absolute;
+	right:5px;
+}
+
+body{
+	padding:65px;
+}
+
+.image{
+	object-fit:scale-down; 
+	object-position:center; 
+	background-color:white;
+	width:inherit;
+}
+
+</style>
+{% endblock %}
+
+{% block script %}
+<script>
+	$(document).ready(function(){
+		updateGridHeight();
+		$("input[name=sorting_criteria]").change(function(){
+			type=$(this).val();
+			sort(type);
+		});
+
+		$("#search_type").val("tag");
+		$("#search_type").change(function(){
+			if($(this).val()=="category"){
+				$("#category_list").css({"display":""});
+				$("#keyword").css({"display":"none"});
+				$("#tag_hint").css({"visibility":"hidden"});
+			}
+			else{
+				if($(this).val()=="tag")
+					$("#tag_hint").css({"visibility":"visible"});
+				else
+					$("#tag_hint").css({"visibility":"hidden"});
+				$("#keyword").css({"display":""});
+				$("#category_list").css({"display":"none"});				
+			}
+		});
+	});
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row text-muted" id="tag_hint">
+	<label>Use comma(,) to separate keywords to search with multiple tags</label>
+</div>
+<!-- input group for searching -->
+<div class="row">
+	<div class="input-group">
+		<input class="form-control col-9" id="keyword" type="text" name="keywords" placeholder="Search" />
+		<select class="form-control col-9" id="category_list" name="category_list" style="display:none">
+			{% for c in categories %}
+			<option value="{{c.name}}">{{c.name}}</option>
+			{% endfor %}
+		</select>
+		<select class="form-control col-3" name="search_type" id="search_type" style="margin:0px 10px">
+			<option value="tag">Tag</option>
+			<option value="category">Category</option>
+			<option value="photographer">Photographer</option>
+		</select>
+		<div class="input-group-addon">
+			<button class="btn btn-outline-secondary" onclick="search()" id="search_button" type="submit">Search</button>
+		</div>
+	</div><!-- input group -->
+</div><!-- row -->
+
+<!-- button-group for sorting -->
+<div class="row nav justify-content-end " style="margin:20px">
+	<label class="btn" style="margin-bottom:0; cursor: default;">Order by:</label>
+	<div class="btn-group btn-group-toggle" data-toggle="buttons">
+		<label class="btn btn-light active">
+			<input type="radio" name="sorting_criteria" id="sort_date" autocomplete="off" value="Date"> Date
+		</label>
+		<label class="btn btn-light">
+			<input type="radio" name="sorting_criteria" id="sort_pop" autocomplete="off" value="Popularity"> Popularity
+		</label>
+	</div>
+</div> <!-- button-group -->
+<div class="clear-fix row" id="grids">
+	{% for image in data %}
+	<div class='grid col-lg-3 col-md-4 col-xs-6' id='{{image.time}}'><a href='/image/{{image.id}}'>
+		<img class='image' src='{{ MEDIA_URL }}{{image.file}}'></a>
+		<div class='imageinfo'>
+			<span class='likes'>Likes: {{image.likes}} </span>
+			<span class='downloads'>Downloads: {{image.downloads}}</span>
+		</div>
+	</div>
+	{% endfor %}   
+</div>
+{% endblock %}
+
+{% block footerscript %}
+<script>
+	function sortByDate(a,b){
+		date1=$(a).attr('id');
+		aDate=new Date(date1);
+		console.log(date1);
+		date2=$(b).attr('id');
+		bDate=new Date(date2);
+		return (aDate<bDate) ? 1 : (aDate>bDate) ? -1 : 0;
+	}
+
+	function sortByPopularity(a,b){
+		aLike=parseInt($(a).find('.likes').html().split(': ')[1]);
+		aDownload=parseInt($(a).find('.downloads').html().split(': ')[1]);
+		aPop=aLike+aDownload;
+		bLike=parseInt($(b).find('.likes').html().split(': ')[1]);
+		bDownload=parseInt($(b).find('.downloads').html().split(': ')[1]);
+		bPop=bLike+bDownload;
+		return (aPop<bPop) ? 1 : (aPop>bPop) ? -1 : 0;
+	}
+
+	function sort(type){
+		if(type=="Date"){
+			a=$(".grid").sort(sortByDate);
+			$('#grids').html(a);
+			$("#sort_date").addClass("active");
+			if($("#sort_pop").hasClass("active"))
+				$("#sort_pop").removeClass("active");
+		}
+		else if(type=="Popularity") {
+			a=$(".grid").sort(sortByPopularity);
+			$('#grids').html(a);
+			$("#sort_pop").addClass("active");
+			if($("#sort_date").hasClass("active"))
+				$("#sort_date").removeClass("active");
+		}
+	}
+
+	function search(){
+		var search_type=$("#search_type").val();
+		var keywords=[];
+		if(search_type=="category")
+			keywords[0]=$("#category_list").val();
+		else if(search_type=="tag"){
+			keywords=$("#keyword").val().split(',');
+			for(var i=0; i<keywords.length; i++){
+				if(keywords[i][0]===' '){
+					keywords[i]=keywords[i].substr(1);
+				}
+			}
+		}
+		else
+			keywords.push($("#keyword").val());	
+		$.ajax({
+			type: "POST",
+			headers: { "X-CSRFToken": $.cookie("csrftoken") },
+			url: '/search/image/'+search_type,
+			constentType: "application/json",
+			data: {'keywords': JSON.stringify(keywords)},
+			success: function(data){
+				console.log(data);
+				var temp="";
+				$.each(data['data'], function(i, d){
+					temp+="<div class='grid col-lg-3 col-md-4 col-xs-6' id='"+d['time']+"'><a href='/image/"+d['id']+"'><img class='image' src='{{ MEDIA_URL }}"+d['file']+"'></a>";
+					temp+="<div class='imageinfo'><span class='likes'>Likes: "+d['likes']+"</span><span class='downloads'>Downloads: "+d['downloads']+"</span></div></div>";
+				});
+				$('#grids').html(temp);
+				sort("Date");
+				updateGridHeight();
+			}
+		});
+	}
+
+	function updateGridHeight(){
+		grid_width=$(".grid").width();
+		$(".grid").height(grid_width);
+		$(".image").css({'width':grid_width,'height':grid_width});		
+	}
+
+	$(window).resize(function(){
+		updateGridHeight();
+	});
+</script>
+{% endblock %}

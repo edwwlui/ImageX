@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %} 
+<title>Upload Image</title> 
+{% endblock %}
+
+{% block style %}
+<style>
+label{
+	display: inline-block;
+	width: 120px;
+}
+
+ul{
+	display:none;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:800px;margin:80px">
+	<div class = "alert alert-success" style="margin: 30px;">
+	    Image uploaded successfully!
+	</div>
+</div>
+{% endblock %}

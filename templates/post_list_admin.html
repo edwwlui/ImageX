@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">PK</th>
+            <th scope="col">Post Title</th>
+            <th scope="col">Slug</th>
+            <th scope="col">SEO Title</th>###
+            <th scope="col">SEO Description</th>###
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    {% for item in items %}
+    <tr>
+    <td>{{item.pk}}</td>
+    <td>{{item.title}}</td>
+    <td>{{item.slug}}</td>
+    <td>{% if item.seo_title %}Yes{% else %}No{% endif %}</td>
+    <td>{% if item.seo_description %}Yes{% else %}No{% endif %}</td>
+    <td><a href="{% url 'blog:edit_post' pk=item.pk %}"><button class="btn btn-warning">Edit</button></a></td>
+        <td><a href="{% url 'blog:delete_image' pk=item.image_id %}"><button class="btn btn-danger">Delete</button></a></td>
+        #pk=image_id
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

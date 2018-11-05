@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %} 
+<title>Image Details</title> 
+{% endblock %}
+
+{% block style %} 
+<style>
+.imageInfo{
+    font-size: 20px;
+    margin-top: 10px;
+}
+body{
+    padding-top: 80px;
+    padding-bottom: 20px;
+    font-size: 18px;
+}
+
+.image{
+    object-fit: scale-down;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h2><b>{{image.title}}</b></h2> by <a href='/viewProfile/{{image.photographer.user.id}}'>{{image.photographer.name}}</a>
+<p class="float-right">{{image.time}}</p>
+<div class="imageInfo">
+    <p><b>Category:</b> {{image.category}}</p>
+    <p><b>Tags:</b> {{tags}} </p>
+    <b>Description:</b>
+    <p>{{image.description}}</p>
+</div>
+<div>
+    <img src='{{ MEDIA_URL }}{{image.file}}' class="image"/>
+</div>
+<br>
+{% if member_viewing_own == False %}
+<a class="btn btn-outline-secondary float-left" href='/image/{{image.id}}/like' >Like ({{image.likes}})</a>
+{% else %}
+<code style='color:blue; float:left;'>Like ({{image.likes}})</code>
+{% endif %}
+<div style="height:30px">
+    <a class="btn btn-outline-secondary float-right" href='/image/{{image.id}}/download' >Download ({{image.downloads}})</a>
+
+    <a class="btn btn-outline-danger float-right" href='/image/{{image.id}}/delete' style='clear:right; margin: 5px 0 10px 0; display:{{owner}}' onclick='return confirm("Are you sure?")'>DELETE</a>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	{% block title %}{% endblock %}
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+</head>
+
+<style>
+.header{
+	margin-bottom:2px;
+	height: 100px ;
+	background-image: url(http://res.cloudinary.com/dtvsfs9ji/image/upload/c_scale,w_200/v1506293407/Image_X_Logo_no_tagline_odelac.png);
+	/*url(http://res.cloudinary.com/dtvsfs9ji/image/upload/v1506293407/Image_X_Logo_no_tagline_odelac.png);*/
+	/*url(http://via.placeholder.com/200x40);*/
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+body {
+	padding-top: 54px;
+}
+
+.nav-item{
+	margin: 0px 10px;
+}
+
+.error{
+	color:red;
+}
+</style>
+
+{% block style %}{% endblock %}
+{% block script %}{% endblock %}
+
+<body>
+	<div class="container">
+		<nav class="navbar navbar-dark bg-dark fixed-top">
+			<a href="/" class="navbar-brand">ImageX</a>
+			<ul class="navbar-nav navbar-expand-sm">
+				{% if user.is_authenticated and request.session.userType == 'member' or user.is_authenticated and request.session.userType == 'curator' %}
+					{% if user.is_authenticated and request.session.userType == 'member' %}
+					<li class="nav-item">
+							<a class="nav-link" href="/viewProfile/{{user.id}}">My Profile</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/upload">Upload</a>
+					</li>
+					{% endif %}
+				<li class="nav-item">
+					<a class="nav-link" href="/user/invitations/send-invite">Invite New Members</a>
+				</li>
+				{% endif %}
+				<li class="nav-item">
+						<a class="nav-link" href="/search">Search</a>
+				</li>
+				{% if user.is_authenticated %}
+				<li class="nav-item">
+					<a style="color:red" class="nav-link" href="/logout">Logout</a>
+				</li>
+				{% else %}
+				<li class="nav-item">
+					<a class="nav-link" href="/login">Login</a>
+				</li>
+				{% endif %}
+			</ul>
+
+		</nav>
+	</div>
+	{% block header %}
+	<!--<div class="header">
+	</div>-->
+	{% endblock %}
+	<div class="container">
+		{% block content %}
+		{% endblock %}
+	</div>
+</body>
+{% block footerscript %}{% endblock %}
+</html>

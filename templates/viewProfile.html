@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+
+{% block title %} 
+<title>View Profile</title> 
+{% endblock %}
+
+{% block style %} 
+<style>
+.avatar{
+	height: 30vh;
+	min-height: 300px;
+	background: no-repeat center center;
+	-webkit-background-size: contain;
+	-moz-background-size: contain;
+	-o-background-size: contain;
+	background-size: contain;
+	background-color: #f2f2f2;
+}
+.avatar_img{
+	height: 30vh;
+	min-height: 300px;
+	object-fit: contain;
+	object-position: center;
+}
+
+#grids{
+	background-color:#f2f2f2;
+}
+
+.grid{
+	padding: 5px;
+}
+
+.imageinfo{
+	height:0px;
+	font-size: 18px;
+	position:relative;
+	top:-30px;
+	background: #f2f2f2;
+	-webkit-transition:.5s ease;
+	-moz-transition:.5s ease;
+	-o-transition:.5s ease;
+	-ms-transition:.5s ease;
+	transition:.5s ease;
+}
+
+.likes{
+	position: absolute;
+	left:5px;
+}
+
+.downloads{
+	position: absolute;
+	right:5px;
+}
+
+body{
+	padding:65px;
+}
+
+.image{
+	object-fit:scale-down; 
+	object-position:center; 
+	background-color:white;
+	width:inherit;
+}
+
+.userInfo{
+	font-size: 20px;
+	text-align: center;
+}
+</style>
+{% endblock %}
+
+{% block header %}
+{% if member.avatarImage %}
+<div class="avatar" style="background-image:url('{{ MEDIA_URL }}{{member.avatarImage}}'); background-color: white; background-repeat: no-repeat; margin: 10px;">
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="userInfo">
+	<h2><b>{{member.name}}'s Profile</b></h2>
+{% if member.contact %}
+	<p><small>Contact:</small> {{member.contact}}</p>
+{% endif %}
+{% if member.location %}
+	<p><small>Location:</small> {{member.location}} </p>
+{% endif %}
+	<small>Description:</small>
+	<p>{{member.description}}</p>
+	<br>
+</div>
+<div class="row nav justify-content-end " style="margin-bottom:10px">
+	<a class="btn btn-outline-secondary" href='/user/edit_profile' style='display:{{owner}};'>Edit</a>
+	<a class="btn btn-outline-secondary" href="/user/change_password" style="margin-left: 5px;">Change Password</a>
+</div>
+<div class="clear-fix row" id="grids">
+	{% for image in data %}
+	<div class='grid col-lg-3 col-md-4 col-xs-6' id='{{image.time}}'><a href='/image/{{image.id}}'>
+		<img class='image' src='{{ MEDIA_URL }}{{image.file}}'></a>
+		<div class='imageinfo'>
+			<span class='likes'>Likes: {{image.likes}} </span>
+			<span class='downloads'>Downloads: {{image.downloads}}</span>
+		</div>
+	</div>
+	{% endfor %}   
+</div>
+
+{% endblock %}
+
+{% block footerscript %}
+<script>
+	$(document).ready(function(){
+		updateGridHeight();
+	});
+
+	function updateGridHeight(){
+		grid_width=$(".grid").width();
+		$(".grid").height(grid_width);
+		$(".image").css({'width':grid_width,'height':grid_width});		
+	}
+
+	$(window).resize(function(){
+		updateGridHeight();
+	});
+</script>
+{% endblock %}

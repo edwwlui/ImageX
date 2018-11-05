@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Logout</title>
+{% endblock %}
+
+{% block content %}
+<!-- Page Container -->
+<div class="container" style="max-width:800px;margin:80px">
+    <p><font size="6" color="516277"><b>Logged out!</b></font></p>
+    <a href="{% url 'login'%}" class="standardbluebutton">Login again</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="offset-3 col-md-6">
+    {% with url_name=request.resolver_match.url_name %}
+        {% if url_name == 'new_post' %}
+            <h2>Add A New Post</h2>
+        {% elif url_name == 'edit_post' %}
+            <h2>Edit Post: {{post}}</h2>
+        {% else %}
+            <h2>Delete Post: {{post}}</h2>
+        {% endif %}
+    {% endwith %}
+{% if messages %}
+    {% for message in messages %}
+        <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %} role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <strong>{{ message }}</strong>
+        </div>
+    {% endfor %}
+{% else %}
+<form method="post">{% csrf_token %}
+    <div class="form-group">
+        {% for field in form %}
+        <label>{{field.label_tag}}</label>
+        {{field}}
+        {% endfor %}
+    </div>
+    {% with url_name=request.resolver_match.url_name %}
+        {% if url_name == 'new_post' %}
+            <button class="btn btn-success" type="submit">Save</button>
+        {% elif url_name == 'edit_post' %}
+            <button class="btn btn-warning" type="submit">Update</button>
+        {% else %}
+            <button class="btn btn-danger" type="submit">Delete</button>
+        {% endif %}
+    {% endwith %}
+</form>
+</div>
+{% endif %}
+{% endblock %}
