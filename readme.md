@@ -1,4 +1,4 @@
-The imageX Project
+ImageX Project
 
 Required installations
 -	Python 3
