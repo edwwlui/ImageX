@@ -1,6 +1,6 @@
 # ImageX Project
 
-imageX is envisioned as an image exchanging platform that photographers can upload a portfolio of quality images and make them available for commercial and non-commercial use freely. Full-size image files may be downloaded from the platform and used for any purpose free of charge. In return, photographers can raise their profile and gain exposure to potential clients.
+imageX is envisioned as an image exchanging platform through which photographers can upload a portfolio of quality images and make them available for commercial and non-commercial use freely. Full-size image files may be downloaded from the platform and used for any purpose free of charge. In return, photographers can raise their profile and gain exposure to potential clients.
 
 # Required installations
 -	Python 3
